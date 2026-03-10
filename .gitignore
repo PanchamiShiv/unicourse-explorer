@@ -1,0 +1,30 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+env/
+Scripts/
+
+# IDE files
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Model files and training outputs
+fine_tuned_model/
+gpt_neo_cache/
+checkpoints/
+
+# SQL dumps
+*.sql
+
+# System files
+.DS_Store
+Thumbs.db
+
+.env

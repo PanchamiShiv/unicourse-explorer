@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNI COURSE EXPLORER</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'assests/form1.css' %}">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('{% static 'img/wallpaper.jpg' %}') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+
+        /* Container */
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px;
+        }
+
+        /* Title Styling */
+        h1 {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #f0f0f0;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Search Container */
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="text"]::placeholder {
+            color: #777;
+            font-style: italic;
+        }
+
+        button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #b30000;
+            border: none;
+            border-radius: 50%;
+            padding: 10px 15px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .results-header{
+
+             background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            color: #f0f0f0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        button:hover {
+            background: #357ABD;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Combined Results Container */
+        .combined-results {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            color: #f0f0f0;
+            text-align: left;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* Header Styling */
+        .combined-results h2 {
+            font-size: 2rem;
+            color: #4A90E2;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        /* GPT-2 Response Styling */
+        .gpt-response {
+            margin-bottom: 30px;
+        }
+
+        .gpt-response p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ddd;
+            margin: 0;
+            text-align: justify;
+        }
+
+        /* Individual Result Item */
+        .result-item {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            color: #f0f0f0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .result-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-item h4 {
+            font-size: 1.6rem;
+            color: #4A90E2;
+            margin-bottom: 10px;
+        }
+
+        .result-item p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .result-item a {
+            color: #4A90E2;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .result-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Title -->
+    <h1>UNI COURSE EXPLORER</h1>
+
+    <!-- Search Form -->
+    <div class="search-container">
+    <form method="get" action="{% url 'search_course' %}">
+        {% csrf_token %}
+        <input type="text" name="query" placeholder="Search for courses" value="{{ query }}" autocomplete="off">
+        <button type="submit"><i class="fas fa-search"></i></button>
+    </form>
+</div>
+
+
+    <!-- Combined Results Container -->
+    {% if generated_response or matched_courses %}
+    <div class="combined-results">
+        <!-- GPT-2 Response -->
+        {% if generated_response %}
+        <div class="gpt-response">
+            <h2>Results:</h2>
+            <p>{{ generated_response }}</p>
+        </div>
+        {% endif %}
+
+<!--        &lt;!&ndash; Search Results &ndash;&gt;-->
+<!--     {% if matched_courses %}-->
+<!--<div class="results-container">-->
+<!--    <div class="results-header">Search Results:</div>-->
+<!--    {% for match in matched_courses %}-->
+<!--    <div class="result-item">-->
+<!--        {% with match.course as course %}-->
+<!--        <h4>-->
+<!--            {% if course.title %}-->
+<!--                {{ course.title }}-->
+<!--            {% elif course.Course_name %}-->
+<!--                {{ course.Course_name }}-->
+<!--            {% elif course.Name %}-->
+<!--                {{ course.Name }}-->
+<!--            {% else %}-->
+<!--                "Unknown Course Title"-->
+<!--            {% endif %}-->
+<!--        </h4>-->
+<!--        <p><strong>Instructor:</strong>-->
+<!--            {% if course.instructor %}-->
+<!--                {{ course.instructor }}-->
+<!--            {% elif course.Instructors %}-->
+<!--                {{ course.Instructors }}-->
+<!--            {% else %}-->
+<!--                "Unknown Instructor"-->
+<!--            {% endif %}-->
+<!--        </p>-->
+<!--        <p><strong>Similarity:</strong> {{ match.similarity|default:"N/A" }}%</p>-->
+<!--        {% endwith %}-->
+<!--    </div>-->
+<!--    {% endfor %}-->
+<!--</div>-->
+<!--{% else %}-->
+<!--<h2>No Results Found</h2>-->
+<!--<p>Try searching with a different keyword.</p>-->
+<!--{% endif %}-->
+
+<!--    </div>-->
+<!--    {% endif %}-->
+</div>
+</body>
+</html>
